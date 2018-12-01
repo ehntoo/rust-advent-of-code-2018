@@ -14,14 +14,12 @@ pub fn solve_part1(input: &[i32]) -> i32 {
 pub fn solve_part2(input: &[i32]) -> i32 {
     let mut observed_sums = HashSet::new();
     let mut freq = 0;
-    'outer: loop {
-        for i in input {
-            freq = freq + i;
-            if observed_sums.contains(&freq) {
-                break 'outer;
-            }
-            observed_sums.insert(freq);
+    for i in input.iter().cycle() {
+        freq = freq + i;
+        if observed_sums.contains(&freq) {
+            break;
         }
+        observed_sums.insert(freq);
     }
     freq
 }
