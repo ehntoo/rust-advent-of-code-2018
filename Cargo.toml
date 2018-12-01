@@ -1,0 +1,12 @@
+[package]
+name = "rust-advent-of-code-2018"
+version = "0.1.0"
+authors = ["Mitchell Johnson <ehntoo@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+clap = "2.32.0"
+
+[[bin]]
+name = "aor"
+path = "src/main.rs"
