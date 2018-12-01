@@ -1,27 +1,7 @@
-extern crate clap;
+extern crate rust_advent_of_code_2018;
+extern crate aoc_runner_derive;
+extern crate aoc_runner;
 
-use clap::{Arg, App};
+use aoc_runner_derive::aoc_main;
 
-mod util;
-mod day1;
-
-fn main() {
-	let matches = App::new("Advent of Rust 2018")
-		.author("Mitchell Johnson <ehntoo@gmail.com>")
-		.arg(Arg::with_name("day")
-			.required(true)
-			.help("Day of the advent calendar")
-			.validator(|str|
-				str.parse::<u32>()
-					.or(Err("day must be an integer".to_owned()))
-					.and_then(|v| match v {
-						1...25 => Ok(()),
-						_ => Err("day must be between 1 and 25".to_owned())
-					})))
-		.get_matches();
-
-	match matches.value_of("day").unwrap().parse::<u32>().unwrap() {
-		1 => day1::solve(),
-		_ => ()
-	}
-}
+aoc_main! { lib = rust_advent_of_code_2018 }

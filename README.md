@@ -1,17 +1,17 @@
 # Solutions to Advent of Code 2018 in Rust
 
-Runner framework shamelessly cribbed from sciyoshi/advent-of-rust-2017
+Using gobanos/cargo-aoc
 
 ## Usage:
 
 Run all days:
 
 ```bash
-cargo run --release --
+cargo aoc
 ```
 
-Run only Day 13:
+Run only Day 13 Part 2:
 
 ```bash
-cargo run --release -- day13
+cargo aoc -d 13 -p 2
 ```
