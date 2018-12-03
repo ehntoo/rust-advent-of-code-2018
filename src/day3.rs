@@ -27,8 +27,7 @@ pub fn input_generator(input: &str) -> Vec<Claim> {
     }).collect()
 }
 
-#[aoc(day3, part1)]
-pub fn solve_part1(input: &[Claim]) -> u32 {
+fn get_overclaimed_map(input: &[Claim]) -> BitVec {
     // create two bitmaps, coloring in the first with each claim as we encounter it and the second
     // as soon as we encounter a cell in the first that's already been marked
     //
@@ -50,12 +49,30 @@ pub fn solve_part1(input: &[Claim]) -> u32 {
             }
         }
     }
+    over_claimed
+}
+
+#[aoc(day3, part1)]
+pub fn solve_part1(input: &[Claim]) -> u32 {
+    let over_claimed = get_overclaimed_map(input);
     over_claimed.iter().filter(|b| *b).count() as u32
 }
 
 #[aoc(day3, part2)]
-pub fn solve_part2(_input: &[Claim]) -> i32 {
-    0
+pub fn solve_part2(input: &[Claim]) -> i32 {
+    let over_claimed = get_overclaimed_map(input);
+    'next_claim: for claim in input {
+        for top_idx in claim.top .. (claim.top+claim.height) {
+            for left_idx in claim.left .. (claim.left+claim.width) {
+                let cur_flat_idx: usize = (left_idx + (1_000 * top_idx)) as usize;
+                if over_claimed.get(cur_flat_idx).unwrap() {
+                    continue 'next_claim;
+                }
+            }
+        }
+        return claim.id as i32;
+    }
+    -1
 }
 
 #[cfg(test)]
