@@ -3,11 +3,11 @@ use bit_vec::BitVec;
 #[derive(PartialEq)]
 #[derive(Debug)]
 pub struct Claim {
-    id: u32,
-    left: u32,
-    top: u32,
-    width: u32,
-    height: u32,
+    id: usize,
+    left: usize,
+    top: usize,
+    width: usize,
+    height: usize,
 }
 
 #[aoc_generator(day3)]
@@ -16,7 +16,7 @@ pub fn input_generator(input: &str) -> Vec<Claim> {
         let mut parts = l.split(&['#', '@', ',', ':', 'x'][..]);
         // Skip the first empty '#' entry
         parts.next();
-        let nums: Vec<u32> = parts.map(|p| p.trim().parse::<u32>().unwrap()).collect();
+        let nums: Vec<usize> = parts.map(|p| p.trim().parse::<usize>().unwrap()).collect();
         Claim {
             id:     nums[0],
             left:   nums[1],
@@ -39,7 +39,7 @@ fn get_overclaimed_map(input: &[Claim]) -> BitVec {
     for claim in input {
         for top_idx in claim.top .. (claim.top+claim.height) {
             for left_idx in claim.left .. (claim.left+claim.width) {
-                let cur_flat_idx: usize = (1_024 * left_idx + (top_idx)) as usize;
+                let cur_flat_idx: usize = 1_024 * left_idx + (top_idx);
                 if !claimed.get(cur_flat_idx).unwrap() {
                     claimed.set(cur_flat_idx, true);
                 } else {
@@ -64,7 +64,7 @@ pub fn solve_part2(input: &[Claim]) -> i32 {
     'next_claim: for claim in input {
         for top_idx in claim.top .. (claim.top+claim.height) {
             for left_idx in claim.left .. (claim.left+claim.width) {
-                let cur_flat_idx: usize = (1_024 * left_idx + (top_idx)) as usize;
+                let cur_flat_idx: usize = 1_024 * left_idx + (top_idx);
                 if over_claimed.get(cur_flat_idx).unwrap() {
                     continue 'next_claim;
                 }
@@ -76,12 +76,12 @@ pub fn solve_part2(input: &[Claim]) -> i32 {
 }
 
 #[aoc(day3, part2, find)]
-pub fn solve_part2_find(input: &[Claim]) -> u32 {
+pub fn solve_part2_find(input: &[Claim]) -> usize {
     let over_claimed = get_overclaimed_map(input);
     input.iter().find(|claim| {
         for top_idx in claim.top .. (claim.top+claim.height) {
             for left_idx in claim.left .. (claim.left+claim.width) {
-                let cur_flat_idx: usize = (1_024 * left_idx + (top_idx)) as usize;
+                let cur_flat_idx: usize = 1_024 * left_idx + (top_idx);
                 if over_claimed.get(cur_flat_idx).unwrap() {
                     return false
                 }
