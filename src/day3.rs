@@ -39,7 +39,7 @@ fn get_overclaimed_map(input: &[Claim]) -> BitVec {
     for claim in input {
         for top_idx in claim.top .. (claim.top+claim.height) {
             for left_idx in claim.left .. (claim.left+claim.width) {
-                let cur_flat_idx: usize = (left_idx + (1_000 * top_idx)) as usize;
+                let cur_flat_idx: usize = (1_000 * left_idx + (top_idx)) as usize;
                 if !claimed.get(cur_flat_idx).unwrap() {
                     claimed.set(cur_flat_idx, true);
                 } else {
@@ -64,7 +64,7 @@ pub fn solve_part2(input: &[Claim]) -> i32 {
     'next_claim: for claim in input {
         for top_idx in claim.top .. (claim.top+claim.height) {
             for left_idx in claim.left .. (claim.left+claim.width) {
-                let cur_flat_idx: usize = (left_idx + (1_000 * top_idx)) as usize;
+                let cur_flat_idx: usize = (1_000 * left_idx + (top_idx)) as usize;
                 if over_claimed.get(cur_flat_idx).unwrap() {
                     continue 'next_claim;
                 }
@@ -73,6 +73,22 @@ pub fn solve_part2(input: &[Claim]) -> i32 {
         return claim.id as i32;
     }
     -1
+}
+
+#[aoc(day3, part2, find)]
+pub fn solve_part2_find(input: &[Claim]) -> u32 {
+    let over_claimed = get_overclaimed_map(input);
+    input.iter().find(|claim| {
+        for top_idx in claim.top .. (claim.top+claim.height) {
+            for left_idx in claim.left .. (claim.left+claim.width) {
+                let cur_flat_idx: usize = (1_000 * left_idx + (top_idx)) as usize;
+                if over_claimed.get(cur_flat_idx).unwrap() {
+                    return false
+                }
+            }
+        }
+        true
+    }).unwrap().id
 }
 
 #[cfg(test)]
