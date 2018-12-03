@@ -34,12 +34,12 @@ fn get_overclaimed_map(input: &[Claim]) -> BitVec {
     // to answer the question "How many square inches of fabric are within two or more claims?", we
     // can just do a population count on the second bitmap.
     // hey, there's this handy bit-vec crate.
-    let mut claimed = BitVec::from_elem(1_000 * 1_000, false);
-    let mut over_claimed = BitVec::from_elem(1_000 * 1_000, false);
+    let mut claimed = BitVec::from_elem(1_024 * 1_024, false);
+    let mut over_claimed = BitVec::from_elem(1_024 * 1_024, false);
     for claim in input {
         for top_idx in claim.top .. (claim.top+claim.height) {
             for left_idx in claim.left .. (claim.left+claim.width) {
-                let cur_flat_idx: usize = (1_000 * left_idx + (top_idx)) as usize;
+                let cur_flat_idx: usize = (1_024 * left_idx + (top_idx)) as usize;
                 if !claimed.get(cur_flat_idx).unwrap() {
                     claimed.set(cur_flat_idx, true);
                 } else {
@@ -64,7 +64,7 @@ pub fn solve_part2(input: &[Claim]) -> i32 {
     'next_claim: for claim in input {
         for top_idx in claim.top .. (claim.top+claim.height) {
             for left_idx in claim.left .. (claim.left+claim.width) {
-                let cur_flat_idx: usize = (1_000 * left_idx + (top_idx)) as usize;
+                let cur_flat_idx: usize = (1_024 * left_idx + (top_idx)) as usize;
                 if over_claimed.get(cur_flat_idx).unwrap() {
                     continue 'next_claim;
                 }
@@ -81,7 +81,7 @@ pub fn solve_part2_find(input: &[Claim]) -> u32 {
     input.iter().find(|claim| {
         for top_idx in claim.top .. (claim.top+claim.height) {
             for left_idx in claim.left .. (claim.left+claim.width) {
-                let cur_flat_idx: usize = (1_000 * left_idx + (top_idx)) as usize;
+                let cur_flat_idx: usize = (1_024 * left_idx + (top_idx)) as usize;
                 if over_claimed.get(cur_flat_idx).unwrap() {
                     return false
                 }
