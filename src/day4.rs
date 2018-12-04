@@ -89,8 +89,21 @@ pub fn solve_part1(input: &[Entry]) -> usize {
 }
 
 #[aoc(day4, part2)]
-pub fn solve_part2(_input: &[Entry]) -> i32 {
-    -1
+pub fn solve_part2(input: &[Entry]) -> usize {
+    let mut nap_vec: Vec<Vec<usize>> = vec![vec![0; 60]; 4096];
+	for e in input {
+        for nap in e.asleep.clone() {
+            for i in nap.start .. nap.end {
+                nap_vec[e.id][i] += 1;
+            }
+        }
+	}
+
+    let per_guard_same_minute_max: Vec<&usize> = nap_vec.iter().map(|v| v.iter().max().unwrap()).collect();
+    let absolute_max = per_guard_same_minute_max.iter().max().unwrap();
+    let sleepiest_guard = per_guard_same_minute_max.iter().position(|x| x == absolute_max).unwrap();
+    let sleepiest_minute = nap_vec[sleepiest_guard].iter().position(|x| &x == absolute_max).unwrap();
+    sleepiest_guard * sleepiest_minute
 }
 
 #[cfg(test)]
