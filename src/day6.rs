@@ -91,3 +91,25 @@ pub fn solve_part1(points: &[Point]) -> u32 {
     println!("wound up with point totals: {:?}", point_totals);
     *point_totals.iter().max().unwrap()
 }
+
+#[aoc(day6, part2)]
+pub fn solve_part2(points: &[Point]) -> u32 {
+    const DISTANCE_THRESHOLD: usize = 10_000;
+    let bound_right = points.iter().max_by_key(|p| p.right).unwrap();
+    let bound_down = points.iter().max_by_key(|p| p.down).unwrap();
+
+    let mut safe_total = 0;
+
+    for right in 0 .. bound_right.right+1 {
+        for down in 0 .. bound_down.down+1 {
+            let distance_sum = points.iter().fold(0, |acc, p| {
+                acc + compute_distance(p, &Point{right, down})
+            });
+            if distance_sum < DISTANCE_THRESHOLD {
+                safe_total += 1;
+            }
+        }
+    }
+
+    safe_total
+}
