@@ -55,7 +55,8 @@ pub fn solve_part1(input: &[u8]) -> usize {
 pub fn solve_part2(input: &[u8]) -> usize {
     let input_vec = input.to_vec();
     (0x41u8..0x5a).map(|a| {
-        let filtered_input: Vec<u8> = input_vec.iter().filter(|c| **c != a && **c != a + 0x20)
+        let filtered_input: Vec<u8> =
+            input_vec.iter().filter(|c| **c != a && **c != a + 0x20)
             .map(|c| *c).collect();
         reduce_polymer(&filtered_input).len()
     }).min().unwrap()
