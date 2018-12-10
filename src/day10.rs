@@ -79,3 +79,13 @@ pub fn solve_part1(points: &[PointOfLight]) -> u32 {
     print_starfield(&starfield);
     0
 }
+
+#[aoc(day10, part2)]
+pub fn solve_part0(points: &[PointOfLight]) -> u32 {
+    let smallest_area = (0..100000).map(|ts| {
+        let bounds = bounding_box_at_timestep(points, ts);
+        let area = (bounds.x_max - bounds.x_min) as i64 * (bounds.y_max - bounds.y_min) as i64;
+        (ts, area)
+    }).min_by_key(|x| x.1).expect("couldn't find the minimum area");
+    smallest_area.0
+}
