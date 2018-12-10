@@ -1,4 +1,5 @@
 use std::boxed::Box;
+use std::collections::VecDeque;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct GameResult {
@@ -54,6 +55,59 @@ pub fn solve_part1(result: &GameResult) -> u32 {
     for i in 1..=result.last_marble {
         perform_turn(&mut state, i as u32);
         // println!("Game state was: next player {:?} next_idx {:?} {:?}", state.current_player + 1, state.current_marble_idx, state.placed_marbles);
+    }
+    *state.player_scores.iter().max().unwrap()
+}
+
+pub struct GameStateCircular {
+    players: usize,
+    current_player: usize,
+    _current_marble_idx: usize,
+    placed_marbles: VecDeque<u32>,
+    player_scores: Vec<u32>,
+}
+
+fn perform_turn_circular(state: &mut GameStateCircular, marble: u32) -> () {
+    if marble % 23 == 0 {
+        for _ in 0..6 {
+            let tmp = state.placed_marbles.pop_back().unwrap();
+            state.placed_marbles.push_front(tmp);
+        }
+        state.player_scores[state.current_player] += state.placed_marbles.pop_back().unwrap();
+        state.player_scores[state.current_player] += marble;
+    } else {
+        for _ in 0..2 {
+            let tmp = state.placed_marbles.pop_front().unwrap();
+            state.placed_marbles.push_back(tmp);
+        }
+        state.placed_marbles.push_front(marble);
+    }
+
+    state.current_player = (state.current_player + 1) % state.players
+}
+
+#[aoc(day9, part2)]
+pub fn solve_part2(result: &GameResult) -> u32 {
+    // Wound up stumped over the lack of a doubly-linked list
+    //
+    // Finally turned to reddit and took inspiration from /u/Grzi_ in the
+    // solution thread:
+    // https://www.reddit.com/r/adventofcode/comments/a4i97s/2018_day_9_solutions/ebfp2zp/
+    //
+    // Nice solution, though.
+
+    let mut state = GameStateCircular {
+        players: result.players,
+        current_player: 0,
+        _current_marble_idx: 0,
+        placed_marbles: VecDeque::new(),
+        player_scores: vec![0; result.players],
+    };
+    state.placed_marbles.push_front(0);
+    // println!("Game state was: {:?}", state.placed_marbles);
+    for i in 1..=result.last_marble * 100 {
+        perform_turn_circular(&mut state, i as u32);
+        // println!("Game state was: next player {:?} {:?}", state.current_player + 1, state.placed_marbles);
     }
     *state.player_scores.iter().max().unwrap()
 }
