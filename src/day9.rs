@@ -112,6 +112,24 @@ pub fn solve_part2(result: &GameResult) -> u32 {
     *state.player_scores.iter().max().unwrap()
 }
 
+#[aoc(day9, part1, circular)]
+pub fn solve_part1_circular(result: &GameResult) -> u32 {
+    let mut state = GameStateCircular {
+        players: result.players,
+        current_player: 0,
+        _current_marble_idx: 0,
+        placed_marbles: VecDeque::new(),
+        player_scores: vec![0; result.players],
+    };
+    state.placed_marbles.push_front(0);
+    // println!("Game state was: {:?}", state.placed_marbles);
+    for i in 1..=result.last_marble {
+        perform_turn_circular(&mut state, i as u32);
+        // println!("Game state was: next player {:?} {:?}", state.current_player + 1, state.placed_marbles);
+    }
+    *state.player_scores.iter().max().unwrap()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
